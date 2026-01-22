@@ -130,4 +130,4 @@ initial plan is to build a restful backend with polling as mvp, and explore webs
 
 # Basic Data Schemas for persistence:
 
-<img width="2972" height="851" alt="Image" src="https://github.com/user-attachments/assets/8f44dac9-1946-4681-af68-872ff77adab8" />
+<img width="2972" height="851" alt="Image" src="https://github.com/user-attachments/assets/042ecff1-e415-42a9-81a0-64d0cfa96881" />
