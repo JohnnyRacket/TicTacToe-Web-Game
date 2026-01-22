@@ -52,50 +52,82 @@ You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx 
 
 [Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Set up CI!
 
-### Step 1
+The above is NX auto-gen, below are my thoughts
 
-To connect to Nx Cloud, run the following command:
+# WiseRock Tic-Tac-Toe
 
-```sh
-npx nx connect
+## Requirements
+
+- User can create a new game board
+- Allow two (and only two) players to connect to a game board
+- Persist game state on the server
+- Follow standard rules for tic-tac-toe (or noughts and crosses)
+- Display the game result and persist in the database at the end of the game
+- Display a ranking of the top five players and allow players to start a new game
+
+## Technical Stack Requirements
+
+- Frontend - React
+- Backend - server of choice (e.g. Node, .NET, Java)
+- Database - PostgresSQL
+
+
+## Project Structure
+
+```
+apps/
+├── backend/          # Backend application
+├── frontend/         # Frontend React application
+libs/
+├── shares-types/     # Shared models package
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### API Endpoints
 
-### Step 2
+- TODO
 
-Use the following command to configure a CI workflow for your workspace:
 
-```sh
-npx nx g ci-workflow
-```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Install Nx Console
+## General Plan
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- build backend api to spec/requirements testing using mocks
+- build frontend statically, host it on the backend
+- create a dockerfile for the backend server and stuff the built frontend into it to be hosted
+- create a docker-compose to spin up a local db and server for e2e local testing and dev
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Planned tech stack
 
-## Useful links
+### Backend
 
-Learn more:
+- tsx, express server, kysely typesafe hORM, vitest for testing
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Frontend
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- react (with typescript), react query for data fetching, react router for client side routing, find a good fit ui library (shadcn potentially for customization?), plan is to operate largely off network state since we are requiring a joinable session and authoritative server, so initial thoughts are no lib for global state management required, if the need arises use react context.
+
+
+## Initial thoughts
+
+Based on requirements ill map out what endpoints i forsee needing:
+
+- `/game/create (POST)` - creates a game session (will generate uid for game session)
+- `/game/{id}/join (POST)` - join existing game session
+- `/game/list (GET)` - list all available game sessions and # of participants (know if full)
+- `/game/{id} (GET)` - get current state for a game by id
+- `/game/{id} (PUT)` - update game state on an existing game (validate move and err if invalid)
+- `/game/{id} (DELETE)` - deletes an existing game
+- `/leaderboard (GET)` - get the top 5 players by # wins (elo system probably too much)
+
+For the concept of users, I think oauth/any form of real auth is overkill for this game scenario, so for the sake of time I am deciding to create a more effortless flow where users visiting the site have a user automatically created for them and store the uuid of that user in the cookies, so if they return without clearing their cookies they will pick up where they left off
+
+`/user/create (POST)` - create a user in the db with a uuid, temporary name
+`/user/{id} (PUT)` - update user, this will primarily be for setting a name the user desires (and maybe a color for fun?)
+
+initial plan is to build a restful backend with polling as mvp, and explore websockets or SSE if time permits for game-state
+
+# Basic Data Schemas for persistence:
+
+<img width="2972" height="851" alt="Image" src="https://github.com/user-attachments/assets/8f44dac9-1946-4681-af68-872ff77adab8" />
