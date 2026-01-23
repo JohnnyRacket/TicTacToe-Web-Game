@@ -17,3 +17,7 @@
 - Worked on thinking about edge cases and full effort required to bring to completion, validation, win conditions, board state, etc
 - borrowed some ideas from prior art such as online chess
 - brainstormed some more fun to have things such as shareable game links, match replays, and a spectator mode (decided no downside to build the foundation to match replays now)
+
+## 1/23/26 4:15-4:55
+- set up dockerfiles for FE & backend, and docker-compose to have an integrated local dev environment where I can work with the DB
+- set up env file and ignored it for config
