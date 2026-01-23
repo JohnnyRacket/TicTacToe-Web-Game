@@ -12,3 +12,8 @@
 - spun up nx monorepo to house backend node/express, frontend react, and a shared model lib
 - nx wanted to misbehave, had to diagnose a node version mismatch, lost some time here, but eventually a newer version via nvm and resourcing/restarting the terminal solved.
 
+## 1/23/26 3:00-3:50pm
+- worked throught a pretty comprehensive project doc, an execution plan to carry out
+- Worked on thinking about edge cases and full effort required to bring to completion, validation, win conditions, board state, etc
+- borrowed some ideas from prior art such as online chess
+- brainstormed some more fun to have things such as shareable game links, match replays, and a spectator mode (decided no downside to build the foundation to match replays now)
