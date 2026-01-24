@@ -20,6 +20,23 @@ services:
     networks:
       - tic-tac-toe-network
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: tic-tac-toe-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tic-tac-toe-network
+    restart: unless-stopped
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
   backend:
     build:
       context: .
@@ -56,6 +73,7 @@ services:
 
 volumes:
   postgres_data:
+  pgadmin_data:
 
 networks:
   tic-tac-toe-network:

@@ -21,3 +21,8 @@
 ## 1/23/26 4:15-4:55
 - set up dockerfiles for FE & backend, and docker-compose to have an integrated local dev environment where I can work with the DB
 - set up env file and ignored it for config
+
+## 1/24/26 1:00-2:55
+- installed kysely and postgres driver dependencies
+- set up config, schema and initial migrations, then added pgadmin to the docker-compose to verify migrations were working
+- cleaned up files and and made sure niche code (like why we used a singleton, or what connection string format was) was commented
