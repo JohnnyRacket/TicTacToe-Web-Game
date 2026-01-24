@@ -1,8 +1,10 @@
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
+
 import { getDatabaseConfig } from './config.js';
-import type { Database } from './schema.js';
 import { migrate } from './migrate.js';
+
+import type { Database } from './schema.js';
 
 let dbInstance: Kysely<Database> | null = null;
 let migrationsRun = false;

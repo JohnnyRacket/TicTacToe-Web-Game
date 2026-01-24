@@ -1,4 +1,5 @@
 import express from 'express';
+
 import { initializeDatabase } from './database/index.js';
 
 const host = process.env.HOST ?? 'localhost';
