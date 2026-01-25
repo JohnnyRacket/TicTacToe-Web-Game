@@ -40,3 +40,12 @@
 - built out api and domain types in the shared type library
 - realizing the lib name "types" might not be perfect if I also want to put business logic in there so that it is portable and not tied to implementation, will probably rename when I embark on that journey
 - we now have nice shared types that should work for our BE and FE, might need a few tweaks down the road for unforseen changes, but we have a solid foundation, and are finally ready to embark on building out BE endpoints and unit tests
+
+## 1/24/26 9:40pm-11:35pm
+
+- configured cors middleware and custom error handling middleware, leaned on express docs for best practices, can in the future add logging/observability here
+- built out api routes for users, games, leaderboard
+- built out user service to decouple data layer from express, added unit tests, and wired up user routes
+- added first lib code to share lib, a hexcode color util, more shared business logic can go in here as we build, especially around game rules
+- added first application error (vs system errors) for user not found
+- this was a solid chunk of work, but now it feels like I am starting to move more quickly and build out the meat and potatoes, with guard-rails and foundations laid out
