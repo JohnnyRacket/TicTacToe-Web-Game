@@ -1,15 +1,25 @@
 import { Router } from 'express';
 
-const router = Router();
+import { LeaderboardService } from '../services/leaderboard/leaderboard.service.js';
 
-router.get('/', async (req, res) => {
-  res.status(501).json({
-    error: {
-      error: 'Not Implemented',
-      message: 'Not Implemented',
-      statusCode: 501,
-    },
-  });
+import type { GetLeaderboardResponse } from '@tic-tac-toe-web-game/types';
+
+const router = Router();
+const leaderboardService = new LeaderboardService();
+
+/**
+ * GET /api/leaderboard
+ * Get top 5 players ordered by wins
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    const leaderboard = await leaderboardService.getTopPlayers(5);
+    const response: GetLeaderboardResponse = { leaderboard };
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

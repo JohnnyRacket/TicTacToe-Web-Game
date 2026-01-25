@@ -49,3 +49,11 @@
 - added first lib code to share lib, a hexcode color util, more shared business logic can go in here as we build, especially around game rules
 - added first application error (vs system errors) for user not found
 - this was a solid chunk of work, but now it feels like I am starting to move more quickly and build out the meat and potatoes, with guard-rails and foundations laid out
+
+## 1/25/26 3:45pm-
+
+- worked on low hanging fruit of fleshing out leaderboard endpoint, added index for db perf
+- working on this made me realize my service folder should probably have subdirectory folders in case the project keeps growing. But this launched me into thinking critically about wether I should build these in a feature first structure, i.e. app/features/user -> this has the routes, the service, the tests, and the errors.
+- ill include some thought process here, because I did spend some time thinking on this:
+  I see a lot of upside here in dx and organization (and this is my goto structure on FE), but I also see some downside. A lot of what I like doing is restrircting imports across features, and forcing them to use a common lib above them or imported to keep them clean and not become sphagetti, I think the concept of a user exsists in every feature that is not just the user feature, so to a degree it makes slightly less sense, and in that manner I could see an argument against. But I am keeping my models in a shared lib, so I already do have a great place for shared common code/types to go which is making me lean heavily towards feature first layout.
+- After the above I decided to go with the above structure for primarily dx (hunting down how things are connected in a late term project is brutal), but instead of the term "features" in the files tructure I think I will use api as the parent directory as it feels more descriptive for BE

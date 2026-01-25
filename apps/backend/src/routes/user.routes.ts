@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { UserNotFoundError } from '../errors/index.js';
-import { UserService } from '../services/user.service.js';
+import { UserService } from '../services/user/user.service.js';
 
 import type {
   CreateUserRequest,

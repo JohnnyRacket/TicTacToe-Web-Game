@@ -3,12 +3,12 @@ import { randomUUID } from 'crypto';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock the database module
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
   getDatabase: vi.fn(),
 }));
 
-import { getDatabase } from '../database/index.js';
-import { UserNotFoundError } from '../errors/index.js';
+import { getDatabase } from '../../database/index.js';
+import { UserNotFoundError } from '../../errors/index.js';
 
 import { UserService } from './user.service.js';
 

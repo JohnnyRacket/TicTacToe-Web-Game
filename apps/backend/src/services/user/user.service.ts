@@ -2,8 +2,8 @@ import { randomUUID } from 'crypto';
 
 import { generateRandomHexColor } from '@tic-tac-toe-web-game/types';
 
-import { getDatabase } from '../database/index.js';
-import { UserNotFoundError } from '../errors/index.js';
+import { getDatabase } from '../../database/index.js';
+import { UserNotFoundError } from '../../errors/index.js';
 
 import type { User , UpdateUserRequest } from '@tic-tac-toe-web-game/types';
 
