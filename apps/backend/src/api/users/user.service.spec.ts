@@ -8,8 +8,8 @@ vi.mock('../../database/index.js', () => ({
 }));
 
 import { getDatabase } from '../../database/index.js';
-import { UserNotFoundError } from '../../errors/index.js';
 
+import { UserNotFoundError } from './user.errors.js';
 import { UserService } from './user.service.js';
 
 import type { User } from '@tic-tac-toe-web-game/types';

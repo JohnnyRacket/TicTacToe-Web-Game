@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { LeaderboardService } from '../services/leaderboard/leaderboard.service.js';
+import { LeaderboardService } from './leaderboard.service.js';
 
 import type { GetLeaderboardResponse } from '@tic-tac-toe-web-game/types';
 

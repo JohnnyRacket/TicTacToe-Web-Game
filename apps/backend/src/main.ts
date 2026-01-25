@@ -2,9 +2,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 
+import apiRoutes from './api/index.js';
 import { initializeDatabase } from './database/index.js';
 import { errorHandler } from './middleware/index.js';
-import apiRoutes from './routes/index.js';
 
 const app = express();
 

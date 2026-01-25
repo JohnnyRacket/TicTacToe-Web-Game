@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import gameRoutes from './game.routes.js';
-import leaderboardRoutes from './leaderboard.routes.js';
-import userRoutes from './user.routes.js';
+import gameRoutes from './games/game.routes.js';
+import leaderboardRoutes from './leaderboard/leaderboard.routes.js';
+import userRoutes from './users/user.routes.js';
 
 const router = Router();
 

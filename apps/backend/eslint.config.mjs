@@ -1,6 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import importPlugin from 'eslint-plugin-import';
+
 import baseConfig from '../../eslint.config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,9 +24,52 @@ export default [
   },
   {
     files: ['**/*.ts', '**/*.js'],
+    plugins: {
+      import: importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: path.resolve(__dirname, 'tsconfig.app.json'),
+        },
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
+    },
     rules: {
       'no-process-exit': 'warn',
       'no-sync': 'warn',
+      'import/no-restricted-paths': [
+        'error',
+        {
+          basePath: path.resolve(__dirname, '../..'),
+          zones: [
+            {
+              target: './apps/backend/src/api/games/**',
+              from: './apps/backend/src/api',
+              except: ['./games'],
+              message:
+                'Cross-API imports are not allowed. The games module cannot import from other API subfolders.',
+            },
+            {
+              target: './apps/backend/src/api/leaderboard/**',
+              from: './apps/backend/src/api',
+              except: ['./leaderboard'],
+              message:
+                'Cross-API imports are not allowed. The leaderboard module cannot import from other API subfolders.',
+            },
+            {
+              target: './apps/backend/src/api/users/**',
+              from: './apps/backend/src/api',
+              except: ['./users'],
+              message:
+                'Cross-API imports are not allowed. The users module cannot import from other API subfolders.',
+            },
+          ],
+        },
+      ],
     },
   },
   {
