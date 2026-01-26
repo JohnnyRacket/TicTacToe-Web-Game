@@ -49,14 +49,14 @@ export default [
             {
               target: './apps/backend/src/api/games/**',
               from: './apps/backend/src/api',
-              except: ['./games'],
+              except: ['./games', './users'],
               message:
                 'Cross-API imports are not allowed. The games module cannot import from other API subfolders.',
             },
             {
               target: './apps/backend/src/api/leaderboard/**',
               from: './apps/backend/src/api',
-              except: ['./leaderboard'],
+              except: ['./leaderboard', './users'],
               message:
                 'Cross-API imports are not allowed. The leaderboard module cannot import from other API subfolders.',
             },

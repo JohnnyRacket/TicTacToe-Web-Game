@@ -1,11 +1,12 @@
-import type { Game, GameMove, GameStatus } from '../domain/game.js';
+import type { PlayerSymbol , BoardPosition, Game, GameMove, GameStatus } from '../domain/game.js';
+
 
 /**
  * Request to create a new game
  */
 export interface CreateGameRequest {
   player_id: string; // UUID
-  player_role?: 'x' | 'o';
+  player_role?: PlayerSymbol;
 }
 
 /**
@@ -43,7 +44,7 @@ export interface GetGameResponse {
 export interface GameListItem {
   id: string; // UUID
   player_x_id: string | null; // UUID
-  player_o_id: string; // UUID
+  player_o_id: string | null; // UUID
   status: GameStatus;
   participant_count: number;
   created_at: Date;
@@ -61,7 +62,7 @@ export interface ListGamesResponse {
  */
 export interface MakeMoveRequest {
   player_id: string; // UUID
-  position: string; // 'a1' to 'c3'
+  position: BoardPosition;
 }
 
 /**

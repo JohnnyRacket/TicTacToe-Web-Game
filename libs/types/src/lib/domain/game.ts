@@ -1,4 +1,18 @@
 /**
+ * PlayerSymbol enum representing the two player symbols in a tic-tac-toe game
+ */
+export enum PlayerSymbol {
+  X = 'x',
+  O = 'o',
+}
+
+/**
+ * Valid board positions using chess notation (a1-c3)
+ * Represents all valid positions on a 3x3 tic-tac-toe board
+ */
+export type BoardPosition = 'a1' | 'a2' | 'a3' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3';
+
+/**
  * Game status enum representing the current state of a game
  */
 export enum GameStatus {
@@ -10,18 +24,18 @@ export enum GameStatus {
 
 /**
  * Board state type using chess notation (a1-c3)
- * Represents a 3x3 grid where each cell can contain 'x', 'o', or null
+ * Represents a 3x3 grid where each cell can contain a PlayerSymbol or null
  */
 export type BoardState = {
-  a1: 'x' | 'o' | null;
-  a2: 'x' | 'o' | null;
-  a3: 'x' | 'o' | null;
-  b1: 'x' | 'o' | null;
-  b2: 'x' | 'o' | null;
-  b3: 'x' | 'o' | null;
-  c1: 'x' | 'o' | null;
-  c2: 'x' | 'o' | null;
-  c3: 'x' | 'o' | null;
+  a1: PlayerSymbol | null;
+  a2: PlayerSymbol | null;
+  a3: PlayerSymbol | null;
+  b1: PlayerSymbol | null;
+  b2: PlayerSymbol | null;
+  b3: PlayerSymbol | null;
+  c1: PlayerSymbol | null;
+  c2: PlayerSymbol | null;
+  c3: PlayerSymbol | null;
 };
 
 /**
@@ -30,7 +44,7 @@ export type BoardState = {
 export interface Game {
   id: string; // UUID
   player_x_id: string | null; // UUID
-  player_o_id: string; // UUID
+  player_o_id: string | null; // UUID
   current_turn: string | null; // UUID
   board_state: BoardState;
   status: GameStatus;
@@ -47,7 +61,7 @@ export interface GameMove {
   id: string; // UUID
   game_id: string; // UUID
   player_id: string; // UUID
-  position: string; // 'a1' to 'c3'
+  position: BoardPosition;
   move_number: number;
   created_at: Date;
 }

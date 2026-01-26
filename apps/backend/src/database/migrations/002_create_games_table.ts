@@ -8,7 +8,7 @@ import type { Kysely} from 'kysely';
  * Creates the games table with the following columns:
  * - id: UUID primary key
  * - player_x_id: UUID foreign key to users (player X, nullable until someone joins)
- * - player_o_id: UUID foreign key to users (player O, set when game is created)
+ * - player_o_id: UUID foreign key to users (player O, nullable until someone joins)
  * - current_turn: UUID foreign key to users (whose turn it is, nullable)
  * - board_state: JSONB storing board state as JSON object with grid coordinates as keys
  *   Format: { "a1": "x" | "o" | null, "a2": ..., "c3": ... }
@@ -17,7 +17,7 @@ import type { Kysely} from 'kysely';
  * - created_at: Timestamp of creation
  * - updated_at: Timestamp of last update
  * 
- * Note: The lobby creator is assigned to player_o_id. When someone joins, they become player_x_id.
+ * Note: Both player_x_id and player_o_id are nullable. Players are assigned when they join the game.
  */
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
@@ -26,7 +26,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn('player_x_id', 'uuid')
-    .addColumn('player_o_id', 'uuid', (col) => col.notNull())
+    .addColumn('player_o_id', 'uuid')
     .addColumn('current_turn', 'uuid')
     .addColumn('board_state', 'jsonb', (col) =>
       col.notNull().defaultTo(

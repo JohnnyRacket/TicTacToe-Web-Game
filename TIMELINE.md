@@ -63,3 +63,9 @@ ill include some thought process here, because I did spend some time thinking on
 - After the above I decided to go with the above structure for primarily dx (hunting down how things are connected in a late term project is brutal), but instead of the term "features" in the files tructure I think I will use api as the parent directory as it feels more descriptive for BE
 - moved to feature first project structure and built eslint rule to disallow cross-feature imports, this rule's config ended up being a little tricky to get right
 - last step for the backend (pre-integration) will be building out the games endpoints and building game logic into our shared lib
+
+## 1/26/26 2:00pm-2:55pm
+
+- worked on building out game logic in shared lib with comprehensive unit tests, this is the core of our business logic
+- by using the shared lib we can leverage isopmorphic js/ts to have the same validation logic running on backend 9authoritative) and frontend (potential for predicting the outcome, not needing to wait for backend response to display change)
+- added some new types like boardPosition and PlayerSymbol to make the code rely less on any magic strings

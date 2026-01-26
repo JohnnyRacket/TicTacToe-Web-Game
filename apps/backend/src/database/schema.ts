@@ -1,3 +1,5 @@
+import type { PlayerSymbol } from '@tic-tac-toe-web-game/types';
+
 /* schema types */
 
 export interface UsersTable {
@@ -12,21 +14,21 @@ export interface UsersTable {
 }
 
 export type BoardState = {
-  a1: 'x' | 'o' | null;
-  a2: 'x' | 'o' | null;
-  a3: 'x' | 'o' | null;
-  b1: 'x' | 'o' | null;
-  b2: 'x' | 'o' | null;
-  b3: 'x' | 'o' | null;
-  c1: 'x' | 'o' | null;
-  c2: 'x' | 'o' | null;
-  c3: 'x' | 'o' | null;
+  a1: PlayerSymbol | null;
+  a2: PlayerSymbol | null;
+  a3: PlayerSymbol | null;
+  b1: PlayerSymbol | null;
+  b2: PlayerSymbol | null;
+  b3: PlayerSymbol | null;
+  c1: PlayerSymbol | null;
+  c2: PlayerSymbol | null;
+  c3: PlayerSymbol | null;
 };
 
 export interface GamesTable {
   id: string; // UUID
   player_x_id: string | null; // UUID, fk to users
-  player_o_id: string; // UUID, fk to users
+  player_o_id: string | null; // UUID, fk to users
   current_turn: string | null; // UUID, fk to users
   board_state: BoardState; // JSON with grid coordinates: { "a1": "x" | "o" | null, ... }
   status: string; // 'waiting' | 'in_progress' | 'completed' | 'abandoned'
