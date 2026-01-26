@@ -8,7 +8,7 @@ import type {
   CreateUserResponse,
   UpdateUserRequest,
   UpdateUserResponse,
-} from '@tic-tac-toe-web-game/types';
+} from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 const router = Router();
 const userService = new UserService();

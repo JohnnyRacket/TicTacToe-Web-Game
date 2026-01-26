@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { LeaderboardService } from './leaderboard.service.js';
 
-import type { GetLeaderboardResponse } from '@tic-tac-toe-web-game/types';
+import type { GetLeaderboardResponse } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 const router = Router();
 const leaderboardService = new LeaderboardService();

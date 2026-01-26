@@ -1,6 +1,6 @@
 import { getDatabase } from '../../database/index.js';
 
-import type { LeaderboardEntry } from '@tic-tac-toe-web-game/types';
+import type { LeaderboardEntry } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 export class LeaderboardService {
   /**

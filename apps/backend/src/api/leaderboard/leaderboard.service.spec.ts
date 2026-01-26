@@ -10,7 +10,7 @@ import { getDatabase } from '../../database/index.js';
 
 import { LeaderboardService } from './leaderboard.service.js';
 
-import type { User } from '@tic-tac-toe-web-game/types';
+import type { User } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 describe('LeaderboardService', () => {
   let leaderboardService: LeaderboardService;

@@ -1,4 +1,4 @@
-import type { PlayerSymbol } from '@tic-tac-toe-web-game/types';
+import type { PlayerSymbol } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 /* schema types */
 

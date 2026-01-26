@@ -6,7 +6,7 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY package*.json ./
 COPY apps/frontend/package.json ./apps/frontend/
-COPY libs/types/package.json ./libs/types/
+COPY libs/tic-tac-toe-lib/package.json ./libs/tic-tac-toe-lib/
 
 # Install all dependencies (needed for build)
 RUN npm ci
@@ -14,12 +14,17 @@ RUN npm ci
 # Copy workspace files needed for build
 COPY nx.json ./
 COPY tsconfig.base.json ./
+COPY tsconfig.json ./
 COPY apps/frontend/tsconfig*.json ./apps/frontend/
+COPY libs/tic-tac-toe-lib/tsconfig*.json ./libs/tic-tac-toe-lib/
 COPY apps/frontend/vite.config.mts ./apps/frontend/
 COPY apps/frontend/index.html ./apps/frontend/
 COPY apps/frontend/public ./apps/frontend/public
 COPY apps/frontend/src ./apps/frontend/src
-COPY libs/types/src ./libs/types/src
+COPY libs/tic-tac-toe-lib/src ./libs/tic-tac-toe-lib/src
+
+# Sync TypeScript project references before building
+RUN NX_SKIP_NX_CACHE=1 npx nx sync
 
 # Build the frontend application
 # Disable Nx cache during Docker build to avoid SQLite database issues

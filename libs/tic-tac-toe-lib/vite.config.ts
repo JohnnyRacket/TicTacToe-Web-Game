@@ -3,14 +3,14 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
-  cacheDir: '../../node_modules/.vite/libs/types',
+  cacheDir: '../../node_modules/.vite/libs/tic-tac-toe-lib',
   plugins: [],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],
   // },
   test: {
-    name: '@tic-tac-toe-web-game/types',
+    name: '@tic-tac-toe-web-game/tic-tac-toe-lib',
     watch: false,
     globals: true,
     environment: 'node',

@@ -1,12 +1,12 @@
 import { randomUUID } from 'crypto';
 
-import { generateRandomHexColor } from '@tic-tac-toe-web-game/types';
+import { generateRandomHexColor } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 import { getDatabase } from '../../database/index.js';
 
 import { UserNotFoundError } from './user.errors.js';
 
-import type { User , UpdateUserRequest } from '@tic-tac-toe-web-game/types';
+import type { User , UpdateUserRequest } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 export class UserService {
   /**

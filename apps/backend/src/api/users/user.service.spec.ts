@@ -12,7 +12,7 @@ import { getDatabase } from '../../database/index.js';
 import { UserNotFoundError } from './user.errors.js';
 import { UserService } from './user.service.js';
 
-import type { User } from '@tic-tac-toe-web-game/types';
+import type { User } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 describe('UserService', () => {
   let userService: UserService;

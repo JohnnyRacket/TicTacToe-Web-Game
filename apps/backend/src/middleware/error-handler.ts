@@ -1,4 +1,4 @@
-import type { ApiError } from '@tic-tac-toe-web-game/types';
+import type { ApiError } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 import type { Request, Response, NextFunction } from 'express';
 
 
