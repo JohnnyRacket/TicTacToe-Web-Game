@@ -67,5 +67,11 @@ ill include some thought process here, because I did spend some time thinking on
 ## 1/26/26 2:00pm-2:55pm
 
 - worked on building out game logic in shared lib with comprehensive unit tests, this is the core of our business logic
-- by using the shared lib we can leverage isopmorphic js/ts to have the same validation logic running on backend 9authoritative) and frontend (potential for predicting the outcome, not needing to wait for backend response to display change)
+- by using the shared lib we can leverage isopmorphic js/ts to have the same validation logic running on backend (authoritative) and frontend (potential for predicting the outcome, not needing to wait for backend response to display change)
 - added some new types like boardPosition and PlayerSymbol to make the code rely less on any magic strings
+
+## 1/27/26 3:45pm-5:15pm
+
+- built out games service and tests
+- a lot of functionality and validation here, will need to integration test this more once frontend is built
+- last night brainstormed a cool additional feature to add if I have time, I have been wanting to try/learn more about ai sdk, so building out an llm powered "ask for help" or "optimal move" feature could be very cool, will see how much time I have
