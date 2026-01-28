@@ -8,8 +8,6 @@ interface GameStatusProps {
   status: GameStatusType;
   currentTurnPlayerId: string | null;
   currentUserId: string | null;
-  playerXId: string | null;
-  playerOId: string | null;
 }
 
 export function GameStatus({
