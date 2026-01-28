@@ -97,3 +97,10 @@ ill include some thought process here, because I did spend some time thinking on
 - fixed up cookie auth to work with incognito browsers by also leveraging local storage(mostly so I could test, but also to allow any device that doesnt allow cookies to work)
 - A lot of various tasks discovered now that I could test games more end to end, fixed up logic around letting x player make a move before another player joins, fixed up buttons not having pointer cursor, fixed up sidebar not being responsive in a way that made sense
 - this session was pretty fun since games were working end to end and getting to see that helped motivate me
+
+## 1/28/26/ 3:45-4:15
+
+- wired the leaderboard page with real data
+- added a new component to show your stats in comparison to the leaderboard
+- created the share link and the ability to join a game if shared the link
+- confirmed spactating works, no real changes needed, a spectator simply cant do anything thanks to fe validation but they can watch the game

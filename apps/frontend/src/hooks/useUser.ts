@@ -5,9 +5,6 @@ import { getUserId } from '../utils/cookies';
 
 import type { User } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
-// Simple guard to prevent multiple simultaneous creation calls
-let isCreating = false;
-
 /**
  * Hook to manage current user
  * Auto-creates user if cookie doesn't exist, otherwise fetches from API
@@ -26,30 +23,24 @@ export function useUser(): {
   // Fetch user if we have a user ID
   const userQuery = useGetUser(userId);
 
-  // Auto-create user if no cookie exists (only once, across all instances)
+  // Auto-create user if no userId exists (only once)
   useEffect(() => {
-    if (
-      !userId &&
-      !hasAttemptedCreation.current &&
-      !isCreating &&
-      !createUserMutation.isPending &&
-      !createUserMutation.isError
-    ) {
-      isCreating = true;
+    if (!userId && !hasAttemptedCreation.current && !createUserMutation.isPending) {
       hasAttemptedCreation.current = true;
-      createUserMutation.mutate({}, {
-        onSettled: () => {
-          isCreating = false;
-        },
-      });
+      createUserMutation.mutate({});
     }
-   
-  }, [userId, createUserMutation.isPending, createUserMutation.isError]);
+  }, [userId, createUserMutation]);
 
-  // User is only available from query once cookie is readable
-  // While creation is pending, user will be undefined
-  const user = userQuery.data;
-  const isLoading = userQuery.isLoading || createUserMutation.isPending;
+  // Use user from query if available, otherwise use mutation data (user was just created)
+  const user = userQuery.data || createUserMutation.data?.user;
+
+  // Loading if: query is loading OR mutation is pending OR we're waiting for user (no user yet and creation attempted)
+  const isLoading =
+    userQuery.isLoading ||
+    createUserMutation.isPending ||
+    (!user && hasAttemptedCreation.current && !createUserMutation.isError);
+
+  // Error if either query or mutation has error
   const isError = userQuery.isError || createUserMutation.isError;
   const error = userQuery.error || createUserMutation.error;
 

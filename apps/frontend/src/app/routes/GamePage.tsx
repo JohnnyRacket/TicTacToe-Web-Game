@@ -2,13 +2,15 @@ import { GameStatus as GameStatusEnum } from '@tic-tac-toe-web-game/tic-tac-toe-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { GameBoard } from '../../features/game/components/GameBoard';
 import { GameEndDialog } from '../../features/game/components/GameEndDialog';
 import { GamePlayers } from '../../features/game/components/GamePlayers';
 import { GameStatus } from '../../features/game/components/GameStatus';
+import { ShareGameButton } from '../../features/game/components/ShareGameButton';
 import { useUser } from '../../hooks/useUser';
-import { useGetGame, useMakeMove } from '../../lib/api/game/game.hooks';
+import { useGetGame, useJoinGame, useMakeMove } from '../../lib/api/game/game.hooks';
 import { useGetUser } from '../../lib/api/user';
 
 import type { BoardPosition } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
@@ -27,6 +29,9 @@ export function GamePage() {
   } = useGetGame(id || '', 2000); // Poll every 2 seconds
 
   const game = gameData?.game;
+  
+  // Join game mutation
+  const joinGameMutation = useJoinGame();
 
   // Show end dialog when game completes and refetch user stats
   useEffect(() => {
@@ -44,6 +49,7 @@ export function GamePage() {
       }, 500);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [game?.status, currentUser, refetchUser, hasShownDialog]);
 
   // Reset dialog state when game ID changes
@@ -102,6 +108,47 @@ export function GamePage() {
 
   const isDisabled = !canMakeMove;
 
+  // Check if user can join this game
+  // User can join if:
+  // - Game is WAITING
+  // - Game has an empty spot (not both players assigned)
+  // - Current user is not already in the game
+  const hasEmptySpot = game && (!game.player_x_id || !game.player_o_id);
+  const isUserInGame =
+    game &&
+    currentUser?.id &&
+    (game.player_x_id === currentUser.id || game.player_o_id === currentUser.id);
+  
+  const canJoinGame =
+    game &&
+    currentUser?.id &&
+    game.status === GameStatusEnum.WAITING &&
+    hasEmptySpot &&
+    !isUserInGame;
+
+  const handleJoinGame = () => {
+    if (!id || !currentUser?.id || !game) {
+      return;
+    }
+
+    joinGameMutation.mutate(
+      {
+        gameId: id,
+        data: { player_x_id: currentUser.id },
+      },
+      {
+        onSuccess: () => {
+          // Game will automatically refresh via polling
+          // No need to navigate since we're already on the game page
+        },
+        onError: (error) => {
+          console.error('Failed to join game:', error);
+          // Error handling could be improved with toast notifications
+        },
+      }
+    );
+  };
+
   // Loading state
   if (isGameLoading) {
     return (
@@ -141,12 +188,36 @@ export function GamePage() {
                 status={game.status}
                 currentTurnPlayerId={game.current_turn}
                 currentUserId={currentUser?.id || null}
-                playerXId={game.player_x_id}
-                playerOId={game.player_o_id}
               />
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            {id && <ShareGameButton gameId={id} />}
+          </div>
         </div>
+
+        {/* Join Game Button - Show when game has empty spot and user is not in game */}
+        {canJoinGame && (
+          <Card className="border-primary">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">Join this game?</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    This game is waiting for a player. Click below to join!
+                  </p>
+                </div>
+                <Button
+                  onClick={handleJoinGame}
+                  disabled={joinGameMutation.isPending}
+                  size="lg"
+                >
+                  {joinGameMutation.isPending ? 'Joining...' : 'Join Game'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <GamePlayers
           playerX={playerX || null}

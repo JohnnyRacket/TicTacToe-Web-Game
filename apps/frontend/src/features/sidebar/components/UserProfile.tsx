@@ -12,7 +12,7 @@ import { useUser } from '../../../hooks/useUser';
 import { useUpdateUser } from '../../../lib/api/user';
 
 export function UserProfile() {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, isError } = useUser();
   const updateUserMutation = useUpdateUser();
 
   const [name, setName] = useState(user?.name || '');
@@ -53,13 +53,26 @@ export function UserProfile() {
     );
   }
 
-  // Handle case when user is not available (e.g., backend is down)
-  if (!user) {
+  // Handle case when user is not available AND there's an actual error
+  // Don't show error if we're still loading or if user creation is in progress
+  if (!user && isError) {
     return (
       <div className="w-full p-4">
         <div className="text-sm text-muted-foreground">
           <div className="font-semibold text-lg mb-1">Unable to Load User</div>
           <div className="text-xs">Please try again in a few minutes</div>
+        </div>
+      </div>
+    );
+  }
+
+  // If no user but no error, show loading state (shouldn't happen, but be safe)
+  if (!user) {
+    return (
+      <div className="w-full p-4">
+        <div className="animate-pulse">
+          <div className="h-6 bg-muted rounded w-3/4 mb-2" />
+          <div className="h-4 bg-muted rounded w-1/2" />
         </div>
       </div>
     );

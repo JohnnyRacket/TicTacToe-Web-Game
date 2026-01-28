@@ -1,100 +1,94 @@
+import { Button } from '../../components/ui/button';
+import { Card, CardContent } from '../../components/ui/card';
 import { LeaderboardEntry as LeaderboardEntryComponent } from '../../features/leaderboard/components/LeaderboardEntry';
-
-import type { LeaderboardEntry } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
-
-// Mock leaderboard data - will be replaced with API data
-const mockLeaderboard: LeaderboardEntry[] = [
-  {
-    rank: 1,
-    user: {
-      id: 'user-1',
-      name: 'Champion Player',
-      color: '#ffd700',
-      wins: 15,
-      losses: 2,
-      draws: 3,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  },
-  {
-    rank: 2,
-    user: {
-      id: 'user-2',
-      name: 'Second Place',
-      color: '#c0c0c0',
-      wins: 12,
-      losses: 5,
-      draws: 1,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  },
-  {
-    rank: 3,
-    user: {
-      id: 'user-3',
-      name: 'Third Place',
-      color: '#cd7f32',
-      wins: 10,
-      losses: 4,
-      draws: 2,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  },
-  {
-    rank: 4,
-    user: {
-      id: 'user-4',
-      name: 'Player Four',
-      color: '#3b82f6',
-      wins: 8,
-      losses: 6,
-      draws: 1,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  },
-  {
-    rank: 5,
-    user: {
-      id: 'user-5',
-      name: 'Player Five',
-      color: '#10b981',
-      wins: 7,
-      losses: 7,
-      draws: 2,
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-  },
-];
+import { UserStatsCard } from '../../features/leaderboard/components/UserStatsCard';
+import { calculateWinRate } from '../../features/leaderboard/utils';
+import { useUser } from '../../hooks/useUser';
+import { useGetLeaderboard } from '../../lib/api/leaderboard/leaderboard.hooks';
 
 export function LeaderboardPage() {
-  // Mock data - will be replaced with API call
-  const leaderboard = mockLeaderboard;
+  const { user: currentUser } = useUser();
+  const {
+    data: leaderboard = [],
+    isLoading,
+    isError,
+    refetch,
+    isRefetching,
+  } = useGetLeaderboard(30000); // Auto-refetch every 30 seconds
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Leaderboard</h1>
-        <p className="text-muted-foreground mt-1">
-          Top 5 players by wins
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Leaderboard</h1>
+          <p className="text-muted-foreground mt-1">
+            Top players ranked by wins
+          </p>
+        </div>
+        <Button
+          onClick={() => refetch()}
+          variant="outline"
+          size="sm"
+          disabled={isRefetching || isLoading}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={isRefetching ? 'animate-spin' : ''}
+          >
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+          </svg>
+          {isRefetching ? 'Refreshing...' : 'Refresh'}
+        </Button>
       </div>
 
-      <div className="space-y-4">
-        {leaderboard.length === 0 ? (
-          <div className="text-center text-muted-foreground py-8">
-            No leaderboard data available
+      {isLoading ? (
+        <Card>
+          <CardContent className="p-6 text-center text-muted-foreground">
+            Loading leaderboard...
+          </CardContent>
+        </Card>
+      ) : isError ? (
+        <Card>
+          <CardContent className="p-6 text-center text-muted-foreground">
+            Unable to load leaderboard. Please try again later.
+          </CardContent>
+        </Card>
+      ) : leaderboard.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-center text-muted-foreground">
+            No players on the leaderboard yet. Play some games to get ranked!
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          {/* User Stats */}
+          <UserStatsCard user={currentUser} />
+
+          {/* Leaderboard Entries */}
+          <div className="space-y-3">
+            {leaderboard.map((entry) => (
+              <LeaderboardEntryComponent
+                key={entry.user.id}
+                entry={entry}
+                isCurrentUser={currentUser?.id === entry.user.id}
+                winRate={calculateWinRate(
+                  entry.user.wins,
+                  entry.user.losses,
+                  entry.user.draws
+                )}
+              />
+            ))}
           </div>
-        ) : (
-          leaderboard.map((entry) => (
-            <LeaderboardEntryComponent key={entry.user.id} entry={entry} />
-          ))
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
