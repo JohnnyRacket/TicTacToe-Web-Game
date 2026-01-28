@@ -90,3 +90,10 @@ ill include some thought process here, because I did spend some time thinking on
 - replaced a lot of the mock ui data with api fetched data
 - disabled linting rule around return types for react components
 - did some integration testing and validated user cookie auth is working and users are being created without issue
+
+## 1/28/26 1:00pm-2:30pm
+
+- made a game creation modal, fixed up game joining, created and of game modal
+- fixed up cookie auth to work with incognito browsers by also leveraging local storage(mostly so I could test, but also to allow any device that doesnt allow cookies to work)
+- A lot of various tasks discovered now that I could test games more end to end, fixed up logic around letting x player make a move before another player joins, fixed up buttons not having pointer cursor, fixed up sidebar not being responsive in a way that made sense
+- this session was pretty fun since games were working end to end and getting to see that helped motivate me

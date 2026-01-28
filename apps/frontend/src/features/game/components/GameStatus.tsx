@@ -16,8 +16,6 @@ export function GameStatus({
   status,
   currentTurnPlayerId,
   currentUserId,
-  playerXId,
-  playerOId,
 }: GameStatusProps) {
   const isUserTurn =
     currentTurnPlayerId === currentUserId &&
@@ -40,9 +38,15 @@ export function GameStatus({
 
   const getTurnLabel = () => {
     if (status !== GameStatusEnum.IN_PROGRESS) return null;
-    if (currentTurnPlayerId === playerXId) return "Player X's Turn";
-    if (currentTurnPlayerId === playerOId) return "Player O's Turn";
-    return null;
+    if (!currentTurnPlayerId || !currentUserId) return null;
+
+    // Check if it's the current user's turn
+    if (currentTurnPlayerId === currentUserId) {
+      return "Your Turn";
+    }
+
+    // Otherwise it's the opponent's turn
+    return "Opponent's Turn";
   };
 
   return (
@@ -55,7 +59,14 @@ export function GameStatus({
         {getStatusLabel()}
       </Badge>
       {getTurnLabel() && (
-        <Badge variant={isUserTurn ? 'default' : 'outline'}>
+        <Badge
+          variant={isUserTurn ? 'default' : 'outline'}
+          className={
+            isUserTurn
+              ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
+              : ''
+          }
+        >
           {getTurnLabel()}
         </Badge>
       )}

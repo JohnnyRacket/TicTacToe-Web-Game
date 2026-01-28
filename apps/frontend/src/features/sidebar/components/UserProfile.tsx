@@ -68,9 +68,9 @@ export function UserProfile() {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <button className="w-full text-left p-4 rounded-lg hover:bg-accent transition-colors">
-          <div className="font-semibold text-lg">{user.name || 'Anonymous'}</div>
-          <div className="text-sm text-muted-foreground mt-1">
+        <button className="w-full text-left p-2 md:p-4 rounded-lg hover:bg-accent transition-colors cursor-pointer">
+          <div className="font-semibold text-sm md:text-lg truncate">{user.name || 'Anonymous'}</div>
+          <div className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">
             {user.wins || 0}W / {user.losses || 0}L / {user.draws || 0}D
           </div>
         </button>

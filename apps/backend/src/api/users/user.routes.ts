@@ -27,7 +27,7 @@ router.post('/create', async (req, res, next) => {
 
     // Set user ID in cookie for future requests
     res.cookie('user_id', user.id, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year, TODO: make cookie refresh on visit

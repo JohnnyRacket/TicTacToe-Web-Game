@@ -1,17 +1,59 @@
 import { Badge } from '../../../components/ui/badge';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { useUser } from '../../../hooks/useUser';
+import { useGetUser } from '../../../lib/api/user';
 
 import type { GameListItem as GameListItemType } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 interface GameListItemProps {
   game: GameListItemType;
   onJoin: (gameId: string) => void;
+  isJoining?: boolean;
 }
 
-export function GameListItem({ game, onJoin }: GameListItemProps) {
+export function GameListItem({ game, onJoin, isJoining = false }: GameListItemProps) {
+  const { user: currentUser } = useUser();
   const isFull = game.participant_count >= 2;
-  const canJoin = !isFull && game.status === 'waiting';
+  const isWaiting = game.status === 'waiting';
+  
+  // Check if current user is already a participant
+  const isCurrentUserParticipant = 
+    currentUser?.id === game.player_x_id || 
+    currentUser?.id === game.player_o_id;
+  
+  const canJoin = !isFull && isWaiting && !isCurrentUserParticipant;
+
+  // Determine the host - whoever created the game first (first non-null player)
+  const hostId = game.player_x_id || game.player_o_id;
+  const { data: hostUser } = useGetUser(hostId);
+
+  // Determine display name
+  const getHostDisplayName = () => {
+    if (!hostId) return 'Unknown';
+    
+    // If it's the current user, show "You"
+    if (currentUser?.id === hostId) {
+      return currentUser.name || 'You';
+    }
+    
+    // Otherwise show the host's name or fallback
+    return hostUser?.name || `Player ${hostId.slice(-4)}`;
+  };
+
+  // Determine button text
+  const getButtonText = () => {
+    if (isJoining) {
+      return 'Joining...';
+    }
+    if (isCurrentUserParticipant) {
+      return 'Already Joined';
+    }
+    if (isFull) {
+      return 'Full';
+    }
+    return 'Join Game';
+  };
 
   return (
     <Card>
@@ -28,7 +70,7 @@ export function GameListItem({ game, onJoin }: GameListItemProps) {
           <div>
             <span className="text-muted-foreground">Host: </span>
             <span className="font-medium">
-              {game.player_x_id ? `Player ${game.player_x_id.slice(-4)}` : 'Unknown'}
+              {getHostDisplayName()}
             </span>
           </div>
           <div className="text-muted-foreground">
@@ -38,9 +80,9 @@ export function GameListItem({ game, onJoin }: GameListItemProps) {
         <Button
           onClick={() => onJoin(game.id)}
           className="w-full"
-          disabled={!canJoin}
+          disabled={!canJoin || isJoining}
         >
-          {isFull ? 'Full' : 'Join Game'}
+          {getButtonText()}
         </Button>
       </CardContent>
     </Card>

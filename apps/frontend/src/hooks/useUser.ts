@@ -46,8 +46,9 @@ export function useUser(): {
    
   }, [userId, createUserMutation.isPending, createUserMutation.isError]);
 
-  // Determine which data source to use
-  const user = userQuery.data || createUserMutation.data?.user;
+  // User is only available from query once cookie is readable
+  // While creation is pending, user will be undefined
+  const user = userQuery.data;
   const isLoading = userQuery.isLoading || createUserMutation.isPending;
   const isError = userQuery.isError || createUserMutation.isError;
   const error = userQuery.error || createUserMutation.error;

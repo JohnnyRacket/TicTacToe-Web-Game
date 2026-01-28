@@ -26,12 +26,12 @@ export function CurrentGameItem({
 
   return (
     <Link to={`/game/${game.id}`}>
-      <Card className="hover:bg-accent transition-colors cursor-pointer">
-        <CardContent className="p-3">
+      <Card className="hover:bg-accent transition-colors cursor-pointer flex-shrink-0 md:flex-shrink w-32 md:w-auto">
+        <CardContent className="p-2 md:p-3">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">vs {displayName}</div>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="text-xs md:text-sm font-medium truncate">vs {displayName}</div>
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-1 md:gap-2 mt-1">
                 <Badge
                   variant={isInProgress ? 'default' : 'secondary'}
                   className="text-xs"

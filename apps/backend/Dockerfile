@@ -21,12 +21,13 @@ COPY apps/backend/src ./apps/backend/src
 COPY libs/tic-tac-toe-lib/src ./libs/tic-tac-toe-lib/src
 
 # Sync TypeScript project references before building
-RUN NX_SKIP_NX_CACHE=1 npx nx sync
+# Disable Nx daemon and cache during Docker build to avoid SQLite database issues
+RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx sync
 
 # Build the backend application and run prune to prepare for production
-# Disable Nx cache during Docker build to avoid SQLite database issues
-RUN NX_SKIP_NX_CACHE=1 npx nx build backend --configuration=production && \
-    NX_SKIP_NX_CACHE=1 npx nx prune backend
+# Disable Nx daemon and cache during Docker build to avoid SQLite database issues
+RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx build backend --configuration=production && \
+    NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx prune backend
 
 # Production stage
 FROM node:20-alpine AS production

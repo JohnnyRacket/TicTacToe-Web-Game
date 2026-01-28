@@ -147,9 +147,21 @@ export class GameService {
 
     if (willHaveBothPlayers) {
       updateData.status = GameStatus.IN_PROGRESS as string;
-      // X always goes first, regardless of who created the game
-      // If game.player_x_id exists, use it; otherwise use the newly assigned player_x_id
-      updateData.current_turn = game.player_x_id ?? updateData.player_x_id!;
+      
+      // Determine whose turn it is:
+      // - If current_turn is null, X already made a move, so it's O's turn
+      // - If current_turn is X's ID, X hasn't moved yet, so it stays X's turn
+      // - Otherwise, use X's ID as default (X goes first)
+      if (game.current_turn === null) {
+        // X already made a move, now it's O's turn
+        updateData.current_turn = updateData.player_o_id || game.player_o_id!;
+      } else if (game.current_turn === game.player_x_id) {
+        // X hasn't moved yet, keep it as X's turn
+        updateData.current_turn = game.player_x_id;
+      } else {
+        // Default: X goes first
+        updateData.current_turn = game.player_x_id ?? updateData.player_x_id!;
+      }
     }
 
     const [updatedGame] = await db
@@ -248,15 +260,26 @@ export class GameService {
     // Validate user exists
     await this.userService.getUserById(playerId);
 
-    // Check game status
-    if (game.status !== GameStatus.IN_PROGRESS) {
-      throw new InvalidMoveError(`Game is not in progress. Current status: ${game.status}`);
-    }
-
     // Get player's role
     const playerRole = getPlayerRole(playerId, game.player_x_id, game.player_o_id);
     if (!playerRole) {
       throw new NotGameParticipantError(gameId, playerId);
+    }
+
+    // Allow moves in WAITING status only if:
+    // - It's X's turn and X is making the move (X can play before O joins)
+    // - Otherwise, game must be IN_PROGRESS
+    if (game.status === GameStatus.WAITING) {
+      if (
+        playerId !== game.player_x_id ||
+        game.current_turn !== game.player_x_id
+      ) {
+        throw new InvalidMoveError(
+          `Game is waiting for players to join. Only player X can make moves before player O joins.`
+        );
+      }
+    } else if (game.status !== GameStatus.IN_PROGRESS) {
+      throw new InvalidMoveError(`Game is not in progress. Current status: ${game.status}`);
     }
 
     // Check if game is already won (service-level check)
@@ -377,11 +400,19 @@ export class GameService {
         }
       } else {
         // Game continues, set next turn
-        updateData.current_turn = getNextTurn(
+        const nextTurn = getNextTurn(
           game.current_turn,
           game.player_x_id,
           game.player_o_id
         );
+        
+        // If O hasn't joined yet, set current_turn to null to wait for O
+        // (X made a move, now we wait for O to join before continuing)
+        if (!game.player_o_id) {
+          updateData.current_turn = null;
+        } else {
+          updateData.current_turn = nextTurn;
+        }
       }
 
       // Update game

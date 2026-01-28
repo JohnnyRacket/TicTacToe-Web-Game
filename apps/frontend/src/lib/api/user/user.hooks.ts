@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { setUserId } from '../../../utils/cookies';
+
 import { createUser, getUser, updateUser } from './user.api';
 
 import type { UpdateUserRequest } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
@@ -27,6 +29,9 @@ export function useCreateUser() {
   return useMutation({
     mutationFn: createUser,
     onSuccess: (data) => {
+      // Store user ID in localStorage as fallback (works in incognito mode)
+      // Cookie is set by backend automatically
+      setUserId(data.user.id);
       // Set the user data in cache and invalidate queries
       queryClient.setQueryData(['user', data.user.id], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });

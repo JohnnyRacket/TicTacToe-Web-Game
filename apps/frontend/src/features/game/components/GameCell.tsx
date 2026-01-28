@@ -21,7 +21,7 @@ export function GameCell({
     <button
       onClick={() => onClick(position)}
       disabled={isDisabled || value !== null}
-      className="aspect-square border-2 border-border rounded-lg text-4xl font-bold hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 transition-colors flex items-center justify-center"
+      className="aspect-square border-2 border-border rounded-lg text-4xl font-bold hover:bg-accent cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition-colors flex items-center justify-center"
     >
       {value === 'x' && (
         <span style={{ color: playerXColor }}>X</span>

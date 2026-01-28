@@ -24,11 +24,12 @@ COPY apps/frontend/src ./apps/frontend/src
 COPY libs/tic-tac-toe-lib/src ./libs/tic-tac-toe-lib/src
 
 # Sync TypeScript project references before building
-RUN NX_SKIP_NX_CACHE=1 npx nx sync
+# Disable Nx daemon and cache during Docker build to avoid SQLite database issues
+RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx sync
 
 # Build the frontend application
-# Disable Nx cache during Docker build to avoid SQLite database issues
-RUN NX_SKIP_NX_CACHE=1 npx nx build frontend --configuration=production
+# Disable Nx daemon and cache during Docker build to avoid SQLite database issues
+RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx build frontend --configuration=production
 
 # Production stage - use nginx to serve static files
 FROM nginx:alpine AS production
