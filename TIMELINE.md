@@ -75,3 +75,10 @@ ill include some thought process here, because I did spend some time thinking on
 - built out games service and tests
 - a lot of functionality and validation here, will need to integration test this more once frontend is built
 - last night brainstormed a cool additional feature to add if I have time, I have been wanting to try/learn more about ai sdk, so building out an llm powered "ask for help" or "optimal move" feature could be very cool, will see how much time I have
+
+## 1/27/26 8:45pm-10:30pm
+
+- set up shadcn and tailwind in frontend to start building ui, shadcn init did not want to play nice with tailwind 4 in our nx monorepo, https://github.com/shadcn-ui/ui/issues/6446, after extended troubleshooting just manually created the components file shadcn init creates
+- built out file structure to be feature oriented
+- mocked out sidebar, lobby, leaderboard, and game UIs with dummy data
+- next step is to wire up react-query hooks for data
