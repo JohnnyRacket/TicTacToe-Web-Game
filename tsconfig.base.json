@@ -16,6 +16,10 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@tic-tac-toe-web-game/source"]
+    "customConditions": ["@tic-tac-toe-web-game/source"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/frontend/src/*"]
+    }
   }
 }
