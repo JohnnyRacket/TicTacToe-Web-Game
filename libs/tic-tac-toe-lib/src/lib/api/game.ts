@@ -45,6 +45,7 @@ export interface GameListItem {
   id: string; // UUID
   player_x_id: string | null; // UUID
   player_o_id: string | null; // UUID
+  current_turn: string | null; // UUID
   status: GameStatus;
   participant_count: number;
   created_at: Date;

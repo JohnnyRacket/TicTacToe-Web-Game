@@ -6,6 +6,7 @@ import { UserService } from './user.service.js';
 import type {
   CreateUserRequest,
   CreateUserResponse,
+  GetUserResponse,
   UpdateUserRequest,
   UpdateUserResponse,
 } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
@@ -34,6 +35,32 @@ router.post('/create', async (req, res, next) => {
 
     res.status(201).json(response);
   } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/user/:id
+ * Get a user by ID
+ */
+router.get('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await userService.getUserById(id);
+    const response: GetUserResponse = { user };
+
+    res.json(response);
+  } catch (error) {
+    if (error instanceof UserNotFoundError) {
+      res.status(404).json({
+        error: {
+          error: 'Not Found',
+          message: error.message,
+          statusCode: 404,
+        },
+      });
+      return;
+    }
     next(error);
   }
 });

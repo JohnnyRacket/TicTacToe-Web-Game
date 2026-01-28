@@ -28,3 +28,10 @@ export interface UpdateUserRequest {
 export interface UpdateUserResponse {
   user: User;
 }
+
+/**
+ * Response from getting a user
+ */
+export interface GetUserResponse {
+  user: User;
+}

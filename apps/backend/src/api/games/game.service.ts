@@ -188,6 +188,7 @@ export class GameService {
         id: game.id,
         player_x_id: game.player_x_id,
         player_o_id: game.player_o_id,
+        current_turn: game.current_turn,
         status: game.status as GameStatus,
         participant_count: participantCount,
         created_at: game.created_at,

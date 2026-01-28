@@ -53,13 +53,15 @@ describe('UserService', () => {
       await userService.createUser('Test User');
 
       const valuesCall = mockDb.values.mock.calls[0][0];
+      expect(valuesCall.id).toBeUndefined();
       expect(valuesCall.name).toBe('Test User');
+      expect(valuesCall.name).not.toMatch(/^user [0-9a-f]{6}$/i);
     });
 
-    it('should generate UUID name when name not provided', async () => {
+    it('should use "user " + color code as name when name not provided', async () => {
       const mockUser: User = {
         id: randomUUID(),
-        name: randomUUID(),
+        name: 'user a1b2c3',
         color: '#a1b2c3',
         wins: 0,
         losses: 0,
@@ -73,10 +75,9 @@ describe('UserService', () => {
       await userService.createUser();
 
       const valuesCall = mockDb.values.mock.calls[0][0];
-      // UUID format: 8-4-4-4-12 hex characters
-      expect(valuesCall.name).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-      );
+      expect(valuesCall.id).toBeUndefined();
+      expect(valuesCall.color).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(valuesCall.name).toBe(`user ${valuesCall.color.slice(1)}`);
     });
 
     it('should generate a valid hex color', async () => {

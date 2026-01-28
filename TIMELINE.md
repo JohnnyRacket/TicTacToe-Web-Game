@@ -82,3 +82,11 @@ ill include some thought process here, because I did spend some time thinking on
 - built out file structure to be feature oriented
 - mocked out sidebar, lobby, leaderboard, and game UIs with dummy data
 - next step is to wire up react-query hooks for data
+
+## 1/28/26 10:30am-12:30pm
+
+- set up cookie user auth system on frontend
+- set up api calls using axios and hooks using react query + react query provider with retry logic
+- replaced a lot of the mock ui data with api fetched data
+- disabled linting rule around return types for react components
+- did some integration testing and validated user cookie auth is working and users are being created without issue

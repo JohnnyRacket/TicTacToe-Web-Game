@@ -1,5 +1,3 @@
-import { randomUUID } from 'crypto';
-
 import { generateRandomHexColor } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 import { getDatabase } from '../../database/index.js';
@@ -14,8 +12,9 @@ export class UserService {
    */
   async createUser(name?: string): Promise<User> {
     const db = getDatabase();
-    const finalName = name || randomUUID();
     const color = generateRandomHexColor();
+    // name defaults to "user " + color code
+    const finalName = name || `user ${color.slice(1)}`;
 
     const [user] = await db
       .insertInto('users')

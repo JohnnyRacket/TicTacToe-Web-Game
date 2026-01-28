@@ -1,14 +1,14 @@
+
 import { GameStatus as GameStatusEnum } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 import { Link } from 'react-router-dom';
 
 import { Badge } from '../../../components/ui/badge';
 import { Card, CardContent } from '../../../components/ui/card';
 
-import type { Game } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
-
+import type { GameListItem } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 interface CurrentGameItemProps {
-  game: Game;
+  game: GameListItem;
   currentUserId: string;
   opponentName?: string;
 }
@@ -18,11 +18,9 @@ export function CurrentGameItem({
   currentUserId,
   opponentName,
 }: CurrentGameItemProps) {
-  const isMyTurn =
-    game.current_turn === currentUserId &&
-    game.status === GameStatusEnum.IN_PROGRESS;
   const isWaiting = game.status === GameStatusEnum.WAITING;
   const isInProgress = game.status === GameStatusEnum.IN_PROGRESS;
+  const isMyTurn = isInProgress && game.current_turn === currentUserId;
 
   const displayName = opponentName || 'Unknown Player';
 
@@ -45,7 +43,7 @@ export function CurrentGameItem({
                     : 'Completed'}
                 </Badge>
                 {isMyTurn && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="default" className="text-xs bg-green-600">
                     Your Turn
                   </Badge>
                 )}
