@@ -251,3 +251,5 @@ export function GamePage() {
     </>
   );
 }
+
+export default GamePage;
