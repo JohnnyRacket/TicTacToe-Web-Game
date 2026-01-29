@@ -56,6 +56,18 @@ Create new game
 
 <img width="829" height="808" alt="Image" src="https://github.com/user-attachments/assets/5860657e-ea44-470b-929b-98417f231347" />
 
+Game Board
+
+<img width="890" height="812" alt="Image" src="https://github.com/user-attachments/assets/a73636c5-5dde-428c-98f3-c7bfac7db57c" />
+
+Game Over Dialog
+
+<img width="903" height="813" alt="Image" src="https://github.com/user-attachments/assets/8083406b-b5b3-4e14-b1a4-d2bd5a4ae99c" />
+
+Responsive UI
+
+<img width="333" height="718" alt="Image" src="https://github.com/user-attachments/assets/87baf465-0f2e-48cc-8278-d6645e215a8a" />
+
 # Tic-Tac-Toe Web Game
 
 ## Requirements
