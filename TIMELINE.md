@@ -134,4 +134,6 @@ I could have absolutely built this in an evening ~3-6 hours I would venture to g
 - I wanted to build an ai move helper in, I tested out passing my data structure in even some smaller LLMs and got good results.
 - elo system and rank system for actually tracking ranking in a meaninful way similar to chess or other online competitive games.
 - integration testing like cypress with core user flows would be crucial to long term deploy confidence.
+- setting up observability and logging would be key to actually deploying this application
 - right now the docker compose dev environment works well but isnt set up for any live reloading, so investing more time into getting that set up in a way where we can have vite and node watch runing with volumes mounted to get a live edit full local dev env working
+- finally actually deploying this project live would also be very fun to have friends and people use it
