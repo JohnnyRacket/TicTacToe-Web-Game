@@ -43,6 +43,14 @@ export async function listGames(): Promise<ListGamesResponse> {
 }
 
 /**
+ * Get games for a specific user
+ */
+export async function getUserGames(userId: string): Promise<ListGamesResponse> {
+  const response = await apiClient.get<ListGamesResponse>(`/game/list/${userId}`);
+  return response.data;
+}
+
+/**
  * Get a game by ID
  */
 export async function getGame(

@@ -1,6 +1,8 @@
 import { InvalidPositionError, PositionOccupiedError } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 import { Router } from 'express';
 
+import { UserNotFoundError } from '../users/user.errors.js';
+
 import {
   GameNotFoundError,
   GameFullError,
@@ -73,6 +75,32 @@ router.post('/:id/join', async (req, res, next) => {
           error: 'Bad Request',
           message: error.message,
           statusCode: 400,
+        },
+      });
+      return;
+    }
+    next(error);
+  }
+});
+
+/**
+ * GET /api/game/list/:userId
+ * List games for a specific user (where user is a participant)
+ */
+router.get('/list/:userId', async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const games = await gameService.getGamesByUserId(userId);
+    const response: ListGamesResponse = { games };
+
+    res.json(response);
+  } catch (error) {
+    if (error instanceof UserNotFoundError) {
+      res.status(404).json({
+        error: {
+          error: 'Not Found',
+          message: error.message,
+          statusCode: 404,
         },
       });
       return;

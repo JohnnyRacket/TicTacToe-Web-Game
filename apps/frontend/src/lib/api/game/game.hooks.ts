@@ -4,6 +4,7 @@ import {
   createGame,
   joinGame,
   listGames,
+  getUserGames,
   getGame,
   makeMove,
   deleteGame,
@@ -132,19 +133,18 @@ export function useDeleteGame() {
 }
 
 /**
- * Hook to get user's games (filters listGames by user participation)
+ * Hook to get user's games (server-side filtered)
  * Returns GameListItem[]
  */
 export function useUserGames(userId: string | null, refetchInterval?: number) {
   return useQuery({
     queryKey: ['games', 'user', userId],
     queryFn: async () => {
-      const response = await listGames();
-      // Filter games where user is a participant
-      return response.games.filter(
-        (game) =>
-          game.player_x_id === userId || game.player_o_id === userId
-      );
+      if (!userId) {
+        return [];
+      }
+      const response = await getUserGames(userId);
+      return response.games;
     },
     enabled: !!userId,
     refetchInterval: refetchInterval

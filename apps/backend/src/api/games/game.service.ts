@@ -209,6 +209,48 @@ export class GameService {
   }
 
   /**
+   * Get games for a specific user (where user is a participant)
+   * @param userId User ID
+   * @returns List of games with participant count
+   * @throws UserNotFoundError if user doesn't exist
+   */
+  async getGamesByUserId(userId: string): Promise<GameListItem[]> {
+    const db = getDatabase();
+
+    // Validate user exists
+    await this.userService.getUserById(userId);
+
+    const games = await db
+      .selectFrom('games')
+      .selectAll()
+      .where((eb) =>
+        eb.or([
+          eb('player_x_id', '=', userId),
+          eb('player_o_id', '=', userId),
+        ])
+      )
+      .where('status', 'in', [GameStatus.WAITING, GameStatus.IN_PROGRESS])
+      .orderBy('created_at', 'desc')
+      .execute();
+
+    return games.map((game) => {
+      let participantCount = 0;
+      if (game.player_x_id) participantCount++;
+      if (game.player_o_id) participantCount++;
+
+      return {
+        id: game.id,
+        player_x_id: game.player_x_id,
+        player_o_id: game.player_o_id,
+        current_turn: game.current_turn,
+        status: game.status as GameStatus,
+        participant_count: participantCount,
+        created_at: game.created_at,
+      };
+    });
+  }
+
+  /**
    * Get a game by ID
    * @param gameId Game ID
    * @param includeMoves Whether to include move history

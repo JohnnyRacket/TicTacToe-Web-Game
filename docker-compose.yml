@@ -9,33 +9,34 @@ services:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres}']
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - tic-tac-toe-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: tic-tac-toe-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - tic-tac-toe-network
-    restart: unless-stopped
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
+  # pgAdmin - uncomment for database debugging
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: tic-tac-toe-pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+  #   ports:
+  #     - "${PGADMIN_PORT:-5050}:80"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - tic-tac-toe-network
+  #   restart: unless-stopped
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
 
   backend:
     build:
@@ -52,7 +53,7 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "${PORT:-3000}:3000"
+      - '${PORT:-3000}:3000'
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,14 +67,14 @@ services:
       dockerfile: apps/frontend/Dockerfile
     container_name: tic-tac-toe-frontend
     ports:
-      - "${FRONTEND_PORT:-4200}:80"
+      - '${FRONTEND_PORT:-4200}:80'
     networks:
       - tic-tac-toe-network
     restart: unless-stopped
 
 volumes:
   postgres_data:
-  pgadmin_data:
+  # pgadmin_data:
 
 networks:
   tic-tac-toe-network:

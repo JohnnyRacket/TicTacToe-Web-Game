@@ -98,9 +98,40 @@ ill include some thought process here, because I did spend some time thinking on
 - A lot of various tasks discovered now that I could test games more end to end, fixed up logic around letting x player make a move before another player joins, fixed up buttons not having pointer cursor, fixed up sidebar not being responsive in a way that made sense
 - this session was pretty fun since games were working end to end and getting to see that helped motivate me
 
-## 1/28/26/ 3:45-4:15
+## 1/28/26/ 3:45pm-4:15pm
 
 - wired the leaderboard page with real data
 - added a new component to show your stats in comparison to the leaderboard
 - created the share link and the ability to join a game if shared the link
 - confirmed spactating works, no real changes needed, a spectator simply cant do anything thanks to fe validation but they can watch the game
+
+## 1/28/26 4:30-5:15
+
+- added code splitting so pages are only loaded when called on
+- added error boundaries to make issues not crash the whole app and make it more recoverable for the user
+- added frontend unit testing to key fe components
+
+## 1/28/26 11:45pm-12:15am
+
+- when I initially made the api plan, I had not envinsioned the user fetching just their games, but as soon as I started making the ui it became clear that would be a critical feature. Initially just got all games and filered by user on FE, but this does not scale, so now we created a dedicated endpoint to get games from the user
+
+## Total Time Spent
+
+~20 hours (all time was kept loosely but to the best of my ability)
+
+Key time sinks:
+
+- project setup and structure to make a production level foundation, definitely had to walk before I could run on this
+- setting up thoughtful file organziation and linting rules
+- testing throught key parts of the project
+
+I could have absolutely built this in an evening ~3-6 hours I would venture to guess if I was in hackathon mode instead of focusing on project quality
+
+# Things I would do with more time:
+
+- paginate the games list endpoint, this could grow crazy with enough time/users and index based on created by date desc for speed.
+- employ websockets for users with http as a fallback, websockets would provide a more instantaneous feedback loop, but polling works fine. after more research in off time SSE have some niche use cases but can be artificially limited by client browsers, some browsers allowing no more than 6 SSE connections to be open at any time across multiple tabs, making it not fit for purpose in my opinion.
+- I wanted to build an ai move helper in, I tested out passing my data structure in even some smaller LLMs and got good results.
+- elo system and rank system for actually tracking ranking in a meaninful way similar to chess or other online competitive games.
+- integration testing like cypress with core user flows would be crucial to long term deploy confidence.
+- right now the docker compose dev environment works well but isnt set up for any live reloading, so investing more time into getting that set up in a way where we can have vite and node watch runing with volumes mounted to get a live edit full local dev env working

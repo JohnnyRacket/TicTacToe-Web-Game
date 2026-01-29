@@ -3,6 +3,19 @@ import { randomUUID } from 'crypto';
 import { PlayerSymbol, GameStatus } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+import { getDatabase, mapDbGameToDomainGame } from '../../database/index.js';
+import { UserNotFoundError } from '../users/user.errors.js';
+
+import {
+  GameNotFoundError,
+  GameFullError,
+  InvalidMoveError,
+  GameNotJoinableError,
+  NotGameParticipantError,
+} from './game.errors.js';
+import { GameService } from './game.service.js';
+
+import type { Game, GameMove } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
 
 // Mock the database module
 vi.mock('../../database/index.js', () => ({
@@ -18,19 +31,6 @@ vi.mock('../users/user.service.js', () => ({
   },
 }));
 
-import { getDatabase, mapDbGameToDomainGame } from '../../database/index.js';
-
-import {
-  GameNotFoundError,
-  GameFullError,
-  InvalidMoveError,
-  GameNotJoinableError,
-  NotGameParticipantError,
-} from './game.errors.js';
-import { GameService } from './game.service.js';
-
-import type { Game, GameMove } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
-
 describe('GameService', () => {
   let gameService: GameService;
   let mockDb: any;
@@ -39,7 +39,7 @@ describe('GameService', () => {
 
   beforeEach(() => {
     gameService = new GameService();
-    
+
     // Create a shared chainable query builder mock
     mockQueryBuilder = {
       selectAll: vi.fn().mockReturnThis(),
@@ -59,7 +59,7 @@ describe('GameService', () => {
       selectFrom: vi.fn(() => mockQueryBuilder),
       deleteFrom: vi.fn(() => mockQueryBuilder),
     };
-    
+
     mockDb = {
       insertInto: vi.fn(() => mockQueryBuilder),
       updateTable: vi.fn(() => mockQueryBuilder),
@@ -539,6 +539,150 @@ describe('GameService', () => {
 
       expect(mockDb.deleteFrom).toHaveBeenCalled();
       expect(mockQueryBuilder.where).toHaveBeenCalledWith('id', '=', game.id);
+    });
+  });
+
+  describe('getGamesByUserId', () => {
+    it('should throw UserNotFoundError when user does not exist', async () => {
+      // Access the mocked UserService instance
+      const userServiceInstance = (gameService as any).userService;
+      vi.spyOn(userServiceInstance, 'getUserById').mockRejectedValue(
+        new UserNotFoundError('non-existent')
+      );
+
+      await expect(gameService.getGamesByUserId('non-existent')).rejects.toThrow(
+        UserNotFoundError
+      );
+    });
+
+    it('should return empty array when user has no games', async () => {
+      mockDb.execute.mockResolvedValue([]);
+
+      const result = await gameService.getGamesByUserId('user-id');
+
+      expect(result).toEqual([]);
+      expect(mockDb.selectFrom).toHaveBeenCalledWith('games');
+    });
+
+    it('should return games where user is player_x_id', async () => {
+      const userId = randomUUID();
+      const gameId = randomUUID();
+      const otherPlayerId = randomUUID();
+      const dbGame = {
+        id: gameId,
+        player_x_id: userId,
+        player_o_id: otherPlayerId,
+        current_turn: userId,
+        status: GameStatus.IN_PROGRESS,
+        created_at: new Date(),
+      };
+
+      mockDb.execute.mockResolvedValue([dbGame]);
+
+      const result = await gameService.getGamesByUserId(userId);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        id: gameId,
+        player_x_id: userId,
+        player_o_id: otherPlayerId,
+        current_turn: userId,
+        status: GameStatus.IN_PROGRESS,
+        participant_count: 2,
+        created_at: dbGame.created_at,
+      });
+    });
+
+    it('should return games where user is player_o_id', async () => {
+      const userId = randomUUID();
+      const gameId = randomUUID();
+      const otherPlayerId = randomUUID();
+      const dbGame = {
+        id: gameId,
+        player_x_id: otherPlayerId,
+        player_o_id: userId,
+        current_turn: otherPlayerId,
+        status: GameStatus.WAITING,
+        created_at: new Date(),
+      };
+
+      mockDb.execute.mockResolvedValue([dbGame]);
+
+      const result = await gameService.getGamesByUserId(userId);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        id: gameId,
+        player_x_id: otherPlayerId,
+        player_o_id: userId,
+        current_turn: otherPlayerId,
+        status: GameStatus.WAITING,
+        participant_count: 2,
+        created_at: dbGame.created_at,
+      });
+    });
+
+    it('should filter to only WAITING and IN_PROGRESS status', async () => {
+      const userId = randomUUID();
+      const waitingGame = {
+        id: randomUUID(),
+        player_x_id: userId,
+        player_o_id: null,
+        current_turn: userId,
+        status: GameStatus.WAITING,
+        created_at: new Date(),
+      };
+      const inProgressGame = {
+        id: randomUUID(),
+        player_x_id: userId,
+        player_o_id: randomUUID(),
+        current_turn: userId,
+        status: GameStatus.IN_PROGRESS,
+        created_at: new Date(),
+      };
+
+      mockDb.execute.mockResolvedValue([waitingGame, inProgressGame]);
+
+      const result = await gameService.getGamesByUserId(userId);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].status).toBe(GameStatus.IN_PROGRESS);
+      expect(result[1].status).toBe(GameStatus.WAITING);
+      // Verify where clause was called with status filter
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('status', 'in', [
+        GameStatus.WAITING,
+        GameStatus.IN_PROGRESS,
+      ]);
+    });
+
+    it('should order games by created_at DESC', async () => {
+      const userId = randomUUID();
+      const olderDate = new Date('2024-01-01');
+      const newerDate = new Date('2024-01-02');
+      const olderGame = {
+        id: randomUUID(),
+        player_x_id: userId,
+        player_o_id: null,
+        current_turn: userId,
+        status: GameStatus.WAITING,
+        created_at: olderDate,
+      };
+      const newerGame = {
+        id: randomUUID(),
+        player_x_id: userId,
+        player_o_id: null,
+        current_turn: userId,
+        status: GameStatus.WAITING,
+        created_at: newerDate,
+      };
+
+      mockDb.execute.mockResolvedValue([newerGame, olderGame]);
+
+      const result = await gameService.getGamesByUserId(userId);
+
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('created_at', 'desc');
+      expect(result[0].created_at).toEqual(newerDate);
+      expect(result[1].created_at).toEqual(olderDate);
     });
   });
 });
