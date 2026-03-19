@@ -5,7 +5,7 @@ import { CurrentGameItem } from './CurrentGameItem';
 
 export function CurrentGamesList() {
   const { user } = useUser();
-  const { data: games = [], isLoading } = useUserGames(user?.id || null, 2000); // Poll every 2 seconds
+  const { data: games = [], isLoading } = useUserGames(user?.id || null);
 
   const getOpponentName = (game: typeof games[0]): string => {
     if (!user) return 'Unknown';

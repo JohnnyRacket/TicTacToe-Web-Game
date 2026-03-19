@@ -19,7 +19,7 @@ export function HomePage() {
     isError: isGamesError,
     refetch: refetchGames,
     isRefetching: isRefetchingGames,
-  } = useListGames(30000); // Auto-refetch every 30 seconds
+  } = useListGames();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [joiningGameId, setJoiningGameId] = useState<string | null>(null);
   const joinGameMutation = useJoinGame();

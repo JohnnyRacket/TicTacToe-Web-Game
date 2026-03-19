@@ -11,6 +11,7 @@ import { GameStatus } from '../../features/game/components/GameStatus';
 import { ShareGameButton } from '../../features/game/components/ShareGameButton';
 import { useUser } from '../../hooks/useUser';
 import { useGetGame, useJoinGame, useMakeMove } from '../../lib/api/game/game.hooks';
+import { useGameSse } from '../../lib/api/sse';
 import { useGetUser } from '../../lib/api/user';
 
 import type { BoardPosition } from '@tic-tac-toe-web-game/tic-tac-toe-lib';
@@ -21,12 +22,14 @@ export function GamePage() {
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [hasShownDialog, setHasShownDialog] = useState(false);
   
-  // Fetch game data with polling for real-time updates
+  // Subscribe to real-time game updates via SSE
+  useGameSse(id || '', currentUser?.id);
+
   const {
     data: gameData,
     isLoading: isGameLoading,
     isError: isGameError,
-  } = useGetGame(id || '', 2000); // Poll every 2 seconds
+  } = useGetGame(id || '');
 
   const game = gameData?.game;
   

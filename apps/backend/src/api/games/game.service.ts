@@ -12,6 +12,8 @@ import {
 import { sql } from 'kysely';
 
 import { getDatabase, mapDbGameToDomainGame, mapDbGameMoveToDomainGameMove } from '../../database/index.js';
+import { sseManager } from '../../sse/index.js';
+import { LeaderboardService } from '../leaderboard/leaderboard.service.js';
 import { UserService } from '../users/user.service.js';
 
 import {
@@ -34,9 +36,11 @@ import type { InsertObject } from 'kysely';
 
 export class GameService {
   private userService: UserService;
+  private leaderboardService: LeaderboardService;
 
   constructor() {
     this.userService = new UserService();
+    this.leaderboardService = new LeaderboardService();
   }
 
   /**
@@ -73,7 +77,12 @@ export class GameService {
       .returningAll()
       .execute();
 
-    return mapDbGameToDomainGame(game);
+    const createdGame = mapDbGameToDomainGame(game);
+
+    const games = await this.listGames();
+    sseManager.broadcastToLobby('lobby_updated', { games });
+
+    return createdGame;
   }
 
   /**
@@ -174,7 +183,13 @@ export class GameService {
       .returningAll()
       .execute();
 
-    return mapDbGameToDomainGame(updatedGame);
+    const joinedGame = mapDbGameToDomainGame(updatedGame);
+
+    sseManager.broadcastToGame(gameId, 'game_updated', { game: joinedGame });
+    const games = await this.listGames();
+    sseManager.broadcastToLobby('lobby_updated', { games });
+
+    return joinedGame;
   }
 
   /**
@@ -356,7 +371,7 @@ export class GameService {
     const moveNumber = (Number(existingMoves?.count) || 0) + 1;
 
     // Use transaction for acid
-    return await db.transaction().execute(async (trx) => {
+    const result = await db.transaction().execute(async (trx) => {
       // Insert move
       const moveData = {
         game_id: gameId,
@@ -475,6 +490,22 @@ export class GameService {
         isDraw,
       };
     });
+
+    sseManager.broadcastToGame(gameId, 'game_updated', { game: result.game });
+
+    if (result.game.status === GameStatus.COMPLETED) {
+      const [games, leaderboard] = await Promise.all([
+        this.listGames(),
+        this.leaderboardService.getTopPlayers(5),
+      ]);
+      sseManager.broadcastToLobby('lobby_updated', { games });
+      sseManager.broadcastToLeaderboard('leaderboard_updated', { leaderboard });
+    } else {
+      const games = await this.listGames();
+      sseManager.broadcastToLobby('lobby_updated', { games });
+    }
+
+    return result;
   }
 
   /**
@@ -490,5 +521,9 @@ export class GameService {
 
     // Delete game (cascade will delete moves via foreign key)
     await db.deleteFrom('games').where('id', '=', gameId).execute();
+
+    sseManager.broadcastToGame(gameId, 'game_deleted', { game_id: gameId });
+    const games = await this.listGames();
+    sseManager.broadcastToLobby('lobby_updated', { games });
   }
 }
