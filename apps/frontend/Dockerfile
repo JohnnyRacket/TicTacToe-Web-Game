@@ -27,6 +27,10 @@ COPY libs/tic-tac-toe-lib/src ./libs/tic-tac-toe-lib/src
 # Disable Nx daemon and cache during Docker build to avoid SQLite database issues
 RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx sync
 
+# Accept build-time API URL (Vite bakes this into the static bundle)
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Build the frontend application
 # Disable Nx daemon and cache during Docker build to avoid SQLite database issues
 RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx build frontend --configuration=production

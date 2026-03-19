@@ -33,7 +33,7 @@ app.use('/api', apiRoutes);
 app.use(errorHandler);
 
 // Initialize database and run migrations before starting server
-const host = process.env.HOST ?? 'localhost';
+const host = process.env.HOST ?? '0.0.0.0';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 initializeDatabase()
