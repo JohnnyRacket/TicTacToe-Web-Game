@@ -27,6 +27,10 @@ COPY libs/tic-tac-toe-lib/src ./libs/tic-tac-toe-lib/src
 # Disable Nx daemon and cache during Docker build to avoid SQLite database issues
 RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx sync
 
+# Build-time environment variables
+ARG VITE_API_BASE_URL=http://localhost:3000
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Build the frontend application
 # Disable Nx daemon and cache during Docker build to avoid SQLite database issues
 RUN NX_DAEMON=false NX_SKIP_NX_CACHE=1 npx nx build frontend --configuration=production
@@ -58,5 +62,4 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
 
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
