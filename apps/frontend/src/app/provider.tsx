@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import { SseProvider } from './sse-provider';
+
 import type { ReactNode } from 'react';
 
 const queryClient = new QueryClient({
@@ -32,6 +34,8 @@ interface ProviderProps {
 
 export function Provider({ children }: ProviderProps) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <SseProvider>{children}</SseProvider>
+    </QueryClientProvider>
   );
 }

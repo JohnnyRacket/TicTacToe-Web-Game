@@ -16,7 +16,7 @@ export function LeaderboardPage() {
     isError,
     refetch,
     isRefetching,
-  } = useGetLeaderboard(30000); // Auto-refetch every 30 seconds
+  } = useGetLeaderboard();
 
   return (
     <div className="space-y-6">
