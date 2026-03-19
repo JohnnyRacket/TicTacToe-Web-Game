@@ -52,6 +52,7 @@ services:
       DB_NAME: ${DB_NAME:-tictactoe}
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
     ports:
       - '${PORT:-3000}:3000'
     depends_on:
